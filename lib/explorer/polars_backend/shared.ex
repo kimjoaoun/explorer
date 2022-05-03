@@ -4,6 +4,7 @@ defmodule Explorer.PolarsBackend.Shared do
 
   alias Explorer.DataFrame, as: DataFrame
   alias Explorer.PolarsBackend.DataFrame, as: PolarsDataFrame
+  alias Explorer.PolarsBackend.LazyDataFrame, as: PolarsLazyFrame
   alias Explorer.PolarsBackend.Native
   alias Explorer.PolarsBackend.Series, as: PolarsSeries
   alias Explorer.Series, as: Series
