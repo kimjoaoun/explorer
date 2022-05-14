@@ -427,7 +427,7 @@ defmodule Explorer.DataFrame do
   end
 
   @doc """
-  Similar to `to_csv/3` but raises if there is a problem reading the CSV.
+  Similar to `to_csv/3` but raises if there is a problem writing the CSV.
   """
   @doc type: :io
   @spec to_csv!(df :: DataFrame.t(), filename :: String.t(), opts :: Keyword.t()) :: String.t()
@@ -437,6 +437,7 @@ defmodule Explorer.DataFrame do
       {:error, error} -> raise "#{error}"
     end
   end
+
 
   @doc """
   Read a file of JSON objects or lists separated by new lines
