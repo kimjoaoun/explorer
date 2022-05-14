@@ -10,6 +10,13 @@ defmodule Explorer.PolarsBackend.Shared do
 
   def apply_native(df_or_s, fun, args \\ [])
 
+  def apply_native(%DataFrame{} = df, fun, args) when fun == :df_to_csv do
+    case apply(Native, fun, [df.data | args]) do
+      {:ok, value} -> {:ok, value}
+      {:error, msg} -> {:error, msg}
+    end
+  end
+
   def apply_native(%Series{} = series, fun, args) do
     case apply(Native, fun, [series.data | args]) do
       {:ok, %PolarsDataFrame{} = new_df} -> create_dataframe(new_df)
