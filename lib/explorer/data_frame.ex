@@ -552,6 +552,10 @@ defmodule Explorer.DataFrame do
     )
   end
 
+
+  @doc """
+  Similar to `load_csv/2` but raises if there is a problem parsing the binary.
+  """
   @doc type: :io
   @spec load_csv!(binary :: String.t(), opts :: Keyword.t()) :: DataFrame.t()
   def load_csv!(binary, opts \\ []) do
