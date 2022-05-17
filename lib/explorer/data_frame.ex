@@ -493,7 +493,7 @@ defmodule Explorer.DataFrame do
       {:ok, "year,country,total,solid_fuel,liquid_fuel,gas_fuel,cement,gas_flaring,per_capita,bunker_fuels\\n2010,AFGHANISTAN,2308,627,1601,74,5,0,0.08,9\\n2010,ALBANIA,1254,117,953,7,177,0,0.43,7\\n"}
   """
   @doc type: :io
-  @spec dump_csv(df :: DataFrame.t(), opts :: Keyword.t()) :: {Atom.t(), String.t()}
+  @spec dump_csv(df :: DataFrame.t(), opts :: Keyword.t()) :: {Atom.t(), String.t()} | {:error, term()}
   def dump_csv(df, opts \\ []) do
     opts = Keyword.validate!(opts, header: true, delimiter: ",")
     apply_impl(df, :dump_csv, [opts[:header], opts[:delimiter]])
@@ -519,14 +519,9 @@ defmodule Explorer.DataFrame do
 
   @doc """
   Read a CSV binary from memory.
-
-  ## Examples
-
-      iex> csv_bin = "year,country,total,solid_fuel,liquid_fuel,gas_fuel,cement,gas_flaring,per_capita,bunker_fuels\\n2010,AFGHANISTAN,2308,627,1601,74,5,0,0.08,9\\n2010,ALBANIA,1254,117,953,7,177,0,0.43,7\\n"
-      iex> df = Explorer.DataFrame.load_csv(csv_bin)
   """
   @doc type: :io
-  @spec load_csv(binary :: String.t(), opts :: Keyword.t()) :: DataFrame.t()
+  @spec load_csv(binary :: String.t(), opts :: Keyword.t()) :: {Atom.t(), DataFrame.t()} | {:error, term()}
   def load_csv(binary, opts \\ []) do
     opts =
       Keyword.validate!(opts,
@@ -557,6 +552,14 @@ defmodule Explorer.DataFrame do
     )
   end
 
+  @doc type: :io
+  @spec load_csv!(binary :: String.t(), opts :: Keyword.t()) :: DataFrame.t()
+  def load_csv!(binary, opts \\ []) do
+    case load_csv(binary, opts) do
+      {:ok, df} -> df
+      {:error, error} -> raise "#{error}"
+    end
+  end
 
   ## Conversion
 
