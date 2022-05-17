@@ -59,6 +59,45 @@ pub fn df_read_csv(
     Ok(ExDataFrame::new(df))
 }
 
+// 11 argumentos
+#[rustler::nif(schedule = "DirtyIo")]
+#[allow(clippy::too_many_arguments)]
+pub fn df_load_csv_binary(
+    csv_str: &str,
+    has_header: bool,
+    stop_after_n_rows: Option<usize>,
+    skip_rows: usize,
+    projection: Option<Vec<usize>>,
+    sep: &str,
+    do_rechunk: bool,
+    column_names: Option<Vec<String>>,
+    encoding: &str,
+    null_char: String,
+    parse_dates: bool,
+) -> Result<ExDataFrame, ExplorerError> {
+    let encoding = match encoding {
+        "utf8-lossy" => CsvEncoding::LossyUtf8,
+        _ => CsvEncoding::Utf8,
+    };
+
+    let cursor = std::io::Cursor::new(csv_str);
+    let df = CsvReader::new(cursor) 
+        .has_header(has_header)
+        .with_parse_dates(parse_dates)
+        .with_n_rows(stop_after_n_rows)
+        .with_delimiter(sep.as_bytes()[0])
+        .with_skip_rows(skip_rows)
+        .with_projection(projection)
+        .with_rechunk(do_rechunk)
+        .with_encoding(encoding)
+        .with_columns(column_names)
+        .with_null_values(Some(NullValues::AllColumns(null_char)))
+        .finish()?;
+
+
+    Ok(ExDataFrame::new(df))
+}
+
 fn dtype_from_str(dtype: &str) -> Result<DataType, ExplorerError> {
     match dtype {
         "str" => Ok(DataType::Utf8),

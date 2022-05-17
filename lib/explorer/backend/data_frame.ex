@@ -28,6 +28,19 @@ defmodule Explorer.Backend.DataFrame do
   @callback to_csv(df, filename :: String.t(), header? :: boolean(), delimiter :: String.t()) ::
               result(String.t())
 
+  @callback load_csv(
+              binary :: String.t(),
+              header? :: boolean(),
+              max_rows :: integer() | nil,
+              skip_rows :: integer(),
+              projection :: List.t(),
+              delimiter :: String.t(),
+              columns :: list(String.t()) | list(Atom.t()) | list(integer()) | nil,
+              encoding :: String.t(),
+              null_character :: String.t(),
+              parse_dates :: boolean()
+            ) :: result(df)
+
   @callback from_parquet(filename :: String.t()) :: result(df)
   @callback to_parquet(df, filename :: String.t()) :: result(String.t())
 

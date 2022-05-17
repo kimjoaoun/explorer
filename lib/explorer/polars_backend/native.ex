@@ -30,6 +30,21 @@ defmodule Explorer.PolarsBackend.Native do
       ),
       do: err()
 
+  def df_load_csv_binary(
+        _csv_str,
+        _has_header,
+        _stop_after_n_rows,
+        _skip_rows,
+        _projection,
+        _sep,
+        _rechunk,
+        _columns,
+        _encoding,
+        _null_char,
+        _parse_dates
+      ),
+      do: err()
+
   def df_to_csv(
         _df,
         _has_headers,

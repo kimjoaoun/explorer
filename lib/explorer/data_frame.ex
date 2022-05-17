@@ -438,7 +438,6 @@ defmodule Explorer.DataFrame do
     end
   end
 
-
   @doc """
   Read a file of JSON objects or lists separated by new lines
 
@@ -506,7 +505,7 @@ defmodule Explorer.DataFrame do
   ## Examples
 
       iex> df = Explorer.Datasets.fossil_fuels()
-      iex> df |> Explorer.DataFrame.head(2) |> Explorer.DataFrame.dump_csv()
+      iex> df |> Explorer.DataFrame.head(2) |> Explorer.DataFrame.dump_csv!()
       "year,country,total,solid_fuel,liquid_fuel,gas_fuel,cement,gas_flaring,per_capita,bunker_fuels\\n2010,AFGHANISTAN,2308,627,1601,74,5,0,0.08,9\\n2010,ALBANIA,1254,117,953,7,177,0,0.43,7\\n"
   """
   @doc type: :io
@@ -517,6 +516,47 @@ defmodule Explorer.DataFrame do
       {:error, error} -> raise "#{error}"
     end
   end
+
+  @doc """
+  Read a CSV binary from memory.
+
+  ## Examples
+
+      iex> csv_bin = "year,country,total,solid_fuel,liquid_fuel,gas_fuel,cement,gas_flaring,per_capita,bunker_fuels\\n2010,AFGHANISTAN,2308,627,1601,74,5,0,0.08,9\\n2010,ALBANIA,1254,117,953,7,177,0,0.43,7\\n"
+      iex> df = Explorer.DataFrame.load_csv(csv_bin)
+  """
+  @doc type: :io
+  @spec load_csv(binary :: String.t(), opts :: Keyword.t()) :: DataFrame.t()
+  def load_csv(binary, opts \\ []) do
+    opts =
+      Keyword.validate!(opts,
+        header: true,
+        max_rows: nil,
+        skip_rows: 0,
+        projection: nil,
+        delimiter: ",",
+        columns: nil,
+        encoding: "utf8",
+        null_character: "NA",
+        parse_dates: false
+      )
+
+    backend = backend_from_options!(opts)
+
+    backend.load_csv(
+      binary,
+      opts[:header],
+      opts[:max_rows],
+      opts[:skip_rows],
+      opts[:projection],
+      opts[:delimiter],
+      opts[:columns],
+      opts[:encoding],
+      opts[:null_character],
+      opts[:parse_dates]
+    )
+  end
+
 
   ## Conversion
 

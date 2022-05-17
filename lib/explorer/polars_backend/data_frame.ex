@@ -118,6 +118,41 @@ defmodule Explorer.PolarsBackend.DataFrame do
   end
 
   @impl true
+  def load_csv(
+        binary,
+        header?,
+        max_rows,
+        skip_rows,
+        projection,
+        delimiter,
+        columns,
+        encoding,
+        null_character,
+        parse_dates
+      ) do
+    # 10 argumentos
+    df =
+      Native.df_load_csv_binary(
+        binary,
+        header?,
+        max_rows,
+        skip_rows,
+        projection,
+        delimiter,
+        true,
+        columns,
+        encoding,
+        null_character,
+        parse_dates
+      )
+
+    case df do
+      {:ok, df} -> {:ok, Shared.create_dataframe(df)}
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  @impl true
   def from_parquet(filename) do
     case Native.df_read_parquet(filename) do
       {:ok, df} -> {:ok, Shared.create_dataframe(df)}
