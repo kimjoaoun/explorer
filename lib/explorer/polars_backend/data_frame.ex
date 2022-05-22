@@ -132,7 +132,7 @@ defmodule Explorer.PolarsBackend.DataFrame do
       ) do
     # 10 argumentos
     df =
-      Native.df_load_csv_binary(
+      Native.df_load_binary(
         binary,
         header?,
         max_rows,
@@ -143,7 +143,8 @@ defmodule Explorer.PolarsBackend.DataFrame do
         columns,
         encoding,
         null_character,
-        parse_dates
+        parse_dates,
+        "csv"
       )
 
     case df do

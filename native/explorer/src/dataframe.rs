@@ -62,8 +62,8 @@ pub fn df_read_csv(
 // 11 argumentos
 #[rustler::nif(schedule = "DirtyIo")]
 #[allow(clippy::too_many_arguments)]
-pub fn df_load_csv_binary(
-    csv_str: &str,
+pub fn df_load_binary(
+    binary: &str,
     has_header: bool,
     stop_after_n_rows: Option<usize>,
     skip_rows: usize,
@@ -74,14 +74,21 @@ pub fn df_load_csv_binary(
     encoding: &str,
     null_char: String,
     parse_dates: bool,
+    format: &str,
 ) -> Result<ExDataFrame, ExplorerError> {
     let encoding = match encoding {
         "utf8-lossy" => CsvEncoding::LossyUtf8,
         _ => CsvEncoding::Utf8,
     };
 
-    let cursor = std::io::Cursor::new(csv_str);
-    let df = CsvReader::new(cursor) 
+    let cursor = std::io::Cursor::new(binary);
+
+    let reader = match format {
+        "csv" => CsvReader::new(cursor),
+        "json" => JsonReader::new(cursor)
+    };
+
+    let df = reader 
         .has_header(has_header)
         .with_parse_dates(parse_dates)
         .with_n_rows(stop_after_n_rows)

@@ -50,7 +50,7 @@ rustler::init!(
         df_new,
         df_pivot_wider,
         df_read_csv,
-        df_load_csv_binary,
+        df_load_binary,
         df_read_ipc,
         df_read_parquet,
         df_read_ndjson,

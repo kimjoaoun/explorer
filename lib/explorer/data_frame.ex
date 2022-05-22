@@ -552,7 +552,6 @@ defmodule Explorer.DataFrame do
     )
   end
 
-
   @doc """
   Similar to `load_csv/2` but raises if there is a problem parsing the binary.
   """
